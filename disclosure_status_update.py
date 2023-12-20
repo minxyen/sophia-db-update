@@ -4,33 +4,17 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
-
+import pandas as pd
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
 import time
+import re
+
 from log import config_logger
 logger = config_logger()
 
-import pandas as pd
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from sophia_login import sophia_login
 
-import re
-
-    # driver configuration
-options = webdriver.ChromeOptions()
-user_data_dir = r"C:/Users/Hsieh149/AppData/Local/Google/Chrome/User Data"
-options.add_argument(f'--user-data-dir={user_data_dir}')
-options.add_argument("profile-directory=Default")
-options.add_experimental_option('detach', True)
-
-    # login to Sophia, to the example contact page.
-driver = webdriver.Chrome(options = options)
-driver.get('https://umn.wellspringsoftware.net/kms/person/form/33641/')
-driver.implicitly_wait(10)
-login = driver.find_element(By.LINK_TEXT, 'Login using UMN credentials')
-login.click()
-driver.implicitly_wait(10)
-signin = driver.find_element(By.XPATH, '//*[@id="main-content"]/div[3]/button')
-signin.click()
-time.sleep(8)
+driver = sophia_login()
 
     # start looping through the records.
 df = pd.read_csv('update_status.csv')
